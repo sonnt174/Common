@@ -34,24 +34,24 @@ class TimeMeasure {
     t_start_ = std::chrono::high_resolution_clock::now();
   }
 
-  TimeUnit elapsed() {
+  TimeUnit Elapsed() {
     auto end_t = std::chrono::high_resolution_clock::now();
     auto elapsed = std::chrono::duration_cast<TimeUnit>(end_t - t_start_);
     return elapsed;
   }
 
-  std::string elapsed_str() {
+  std::string ElapsedStr() {
     std::string str = "";
-    auto elap = elapsed();
-    str = "\nTime measured = " + std::to_string(elap.count()) + " " + duration_expr() + "\n";
+    auto elap = Elapsed();
+    str = "\nTime measured = " + std::to_string(elap.count()) + " " + DurationExpr() + "\n";
     return str;
   }
 
   ~TimeMeasure() {
-    std::cout << elapsed_str();
+    std::cout << ElapsedStr();
   }
  private:
-  std::string duration_expr() {
+  std::string DurationExpr() {
     if (std::ratio_equal<TimeUnit::period, std::atto>::value) {
       return "atto seconds";
     }
@@ -110,7 +110,8 @@ class TimeMeasure {
       return "unknown unit seconds";
     }
   }
-   std::chrono::time_point<std::chrono::steady_clock> t_start_;
+  
+  std::chrono::time_point<std::chrono::steady_clock> t_start_;
 };
 
 #endif
