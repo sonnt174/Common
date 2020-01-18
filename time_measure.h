@@ -1,3 +1,5 @@
+// Copyright (C) 2020 Sirn Nguyen Truong <sonnt174@gmail.com>
+
 #ifndef __TIME_MEASURE_H__
 #define __TIME_MEASURE_H__
 
@@ -6,6 +8,25 @@
 #include <string>
 #include <ratio>
 
+/**
+  Example of how to use class TimeMeasure:
+
+  void test_time_measure() {
+    srand(0);
+    constexpr int N_SIZE = (long long)1e5;
+    std::vector<int> arr_nums(N_SIZE);
+    for (int i = 0; i < N_SIZE; ++i) {
+      auto val = rand();
+      arr_nums[i] = val;
+    }
+    {
+      auto arr = arr_nums;
+      TimeMeasure<chrono::microseconds> time_mea;
+      std::sort(begin(arr), end(arr));
+    }
+  }
+
+*/
 template <typename TimeUnit = std::chrono::milliseconds>
 class TimeMeasure {
  public:
