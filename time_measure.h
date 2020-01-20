@@ -9,25 +9,25 @@
 #include <ratio>
 
 /**
-  Example of how to use class TimeMeasure:
-  void test_time_measure() {
-    srand(0);
-    constexpr int N_SIZE = (int)1e5;
-    std::vector<int> arr_nums(N_SIZE);
-    for (int i = 0; i < N_SIZE; ++i) {
-      auto val = rand();
-      arr_nums[i] = val;
-    }
-    {
-      auto arr = arr_nums;
-      TimeMeasure<chrono::microseconds> time_mea;
-      std::sort(begin(arr), end(arr));
-    }
-  }
+Example of how to use class TimeMeasure:
+void test_time_measure() {
+srand(0);
+constexpr int N_SIZE = (int)1e5;
+std::vector<int> arr_nums(N_SIZE);
+for (int i = 0; i < N_SIZE; ++i) {
+auto val = rand();
+arr_nums[i] = val;
+}
+{
+auto arr = arr_nums;
+TimeMeasure<chrono::microseconds> time_mea;
+std::sort(begin(arr), end(arr));
+}
+}
 */
 template <typename TimeUnit = std::chrono::milliseconds>
 class TimeMeasure {
- public:
+public:
   TimeMeasure() {
     start_t_ = std::chrono::steady_clock::now();
   }
@@ -41,14 +41,15 @@ class TimeMeasure {
   std::string ElapsedStr() {
     std::string str = "";
     auto elap = Elapsed();
-	if (DurationExpr() == "") {
-	  auto num = TimeUnit::period::num;
+    if (DurationExpr() == "") {
+      auto num = TimeUnit::period::num;
       auto den = TimeUnit::period::den;
       auto sec_factor = num * 1.0 / den;
       str = std::to_string(elap.count() * sec_factor) + " seconds";
-	} else {
-	  str = std::to_string(elap.count()) + " " + DurationExpr();
-	}
+    }
+    else {
+      str = std::to_string(elap.count()) + " " + DurationExpr();
+    }
     str = "\nTime measured = " + str + "\n";
     return str;
   }
@@ -56,7 +57,7 @@ class TimeMeasure {
   ~TimeMeasure() {
     std::cout << ElapsedStr();
   }
- private:
+private:
   std::string DurationExpr() {
     if (std::ratio_equal<typename TimeUnit::period, std::atto>::value) {
       return "atto seconds";
