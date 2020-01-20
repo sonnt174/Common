@@ -10,10 +10,9 @@
 
 /**
   Example of how to use class TimeMeasure:
-
   void test_time_measure() {
     srand(0);
-    constexpr int N_SIZE = (long long)1e5;
+    constexpr int N_SIZE = (int)1e5;
     std::vector<int> arr_nums(N_SIZE);
     for (int i = 0; i < N_SIZE; ++i) {
       auto val = rand();
@@ -25,25 +24,32 @@
       std::sort(begin(arr), end(arr));
     }
   }
-
 */
 template <typename TimeUnit = std::chrono::milliseconds>
 class TimeMeasure {
  public:
   TimeMeasure() {
-    t_start_ = std::chrono::high_resolution_clock::now();
+    start_t_ = std::chrono::steady_clock::now();
   }
 
   TimeUnit Elapsed() {
-    auto end_t = std::chrono::high_resolution_clock::now();
-    auto elapsed = std::chrono::duration_cast<TimeUnit>(end_t - t_start_);
+    auto end_t = std::chrono::steady_clock::now();
+    auto elapsed = std::chrono::duration_cast<TimeUnit>(end_t - start_t_);
     return elapsed;
   }
 
   std::string ElapsedStr() {
     std::string str = "";
     auto elap = Elapsed();
-    str = "\nTime measured = " + std::to_string(elap.count()) + " " + DurationExpr() + "\n";
+	if (DurationExpr() == "") {
+	  auto num = TimeUnit::period::num;
+      auto den = TimeUnit::period::den;
+      auto sec_factor = num * 1.0 / den;
+      str = std::to_string(elap.count() * sec_factor) + " seconds";
+	} else {
+	  str = std::to_string(elap.count()) + " " + DurationExpr();
+	}
+    str = "\nTime measured = " + str + "\n";
     return str;
   }
 
@@ -52,66 +58,66 @@ class TimeMeasure {
   }
  private:
   std::string DurationExpr() {
-    if (std::ratio_equal<TimeUnit::period, std::atto>::value) {
+    if (std::ratio_equal<typename TimeUnit::period, std::atto>::value) {
       return "atto seconds";
     }
-    else if (std::ratio_equal<TimeUnit::period, std::femto>::value) {
+    else if (std::ratio_equal<typename TimeUnit::period, std::femto>::value) {
       return "femto seconds";
     }
-    else if (std::ratio_equal<TimeUnit::period, std::pico>::value) {
+    else if (std::ratio_equal<typename TimeUnit::period, std::pico>::value) {
       return "pico seconds";
     }
-    else if (std::ratio_equal<TimeUnit::period, std::nano>::value) {
+    else if (std::ratio_equal<typename TimeUnit::period, std::nano>::value) {
       return "nano seconds";
     }
-    else if (std::ratio_equal<TimeUnit::period, std::micro>::value) {
+    else if (std::ratio_equal<typename TimeUnit::period, std::micro>::value) {
       return "micro seconds";
     }
-    else if (std::ratio_equal<TimeUnit::period, std::milli>::value) {
+    else if (std::ratio_equal<typename TimeUnit::period, std::milli>::value) {
       return "milli seconds";
     }
-    else if (std::ratio_equal<TimeUnit::period, std::centi>::value) {
+    else if (std::ratio_equal<typename TimeUnit::period, std::centi>::value) {
       return "centi seconds";
     }
-    else if (std::ratio_equal<TimeUnit::period, std::deci>::value) {
+    else if (std::ratio_equal<typename TimeUnit::period, std::deci>::value) {
       return "deci seconds";
     }
-    else if (std::ratio_equal<TimeUnit::period, std::deca>::value) {
+    else if (std::ratio_equal<typename TimeUnit::period, std::deca>::value) {
       return "deca seconds";
     }
-    else if (std::ratio_equal<TimeUnit::period, std::hecto>::value) {
+    else if (std::ratio_equal<typename TimeUnit::period, std::hecto>::value) {
       return "hecto seconds";
     }
-    else if (std::ratio_equal<TimeUnit::period, std::kilo>::value) {
+    else if (std::ratio_equal<typename TimeUnit::period, std::kilo>::value) {
       return "kilo seconds";
     }
-    else if (std::ratio_equal<TimeUnit::period, std::mega>::value) {
+    else if (std::ratio_equal<typename TimeUnit::period, std::mega>::value) {
       return "mega seconds";
     }
-    else if (std::ratio_equal<TimeUnit::period, std::giga>::value) {
+    else if (std::ratio_equal<typename TimeUnit::period, std::giga>::value) {
       return "giga seconds";
     }
-    else if (std::ratio_equal<TimeUnit::period, std::tera>::value) {
+    else if (std::ratio_equal<typename TimeUnit::period, std::tera>::value) {
       return "tera seconds";
     }
-    else if (std::ratio_equal<TimeUnit::period, std::peta>::value) {
+    else if (std::ratio_equal<typename TimeUnit::period, std::peta>::value) {
       return "peta seconds";
     }
-    else if (std::ratio_equal<TimeUnit::period, std::exa>::value) {
+    else if (std::ratio_equal<typename TimeUnit::period, std::exa>::value) {
       return "exa seconds";
     }
-    else if (std::ratio_equal<TimeUnit::period, std::chrono::minutes::period>::value) {
+    else if (std::ratio_equal<typename TimeUnit::period, std::chrono::minutes::period>::value) {
       return "minutes";
     }
-    else if (std::ratio_equal<TimeUnit::period, std::chrono::hours::period>::value) {
+    else if (std::ratio_equal<typename TimeUnit::period, std::chrono::hours::period>::value) {
       return "hours";
     }
     else {
-      return "unknown unit seconds";
+      return "";
     }
   }
-  
-  std::chrono::time_point<std::chrono::steady_clock> t_start_;
+
+  std::chrono::time_point<std::chrono::steady_clock> start_t_;
 };
 
 #endif
