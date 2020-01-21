@@ -13,7 +13,7 @@
 
   void test_time_measure() {
     srand(0);
-    constexpr int N_SIZE = (long long)1e5;
+    constexpr int N_SIZE = (int)1e5;
     std::vector<int> arr_nums(N_SIZE);
     for (int i = 0; i < N_SIZE; ++i) {
       auto val = rand();
@@ -22,6 +22,13 @@
     {
       auto arr = arr_nums;
       TimeMeasure<chrono::microseconds> time_mea;
+      std::sort(begin(arr), end(arr));
+    }
+    
+    {
+      auto arr = arr_nums;
+      using myduration = std::chrono::duration<double, std::ratio<1, 69000000000>>;
+      TimeMeasure<myduration> time_mea;
       std::sort(begin(arr), end(arr));
     }
   }
@@ -53,7 +60,7 @@ public:
     else {
       str = std::to_string(elap.count()) + " " + DurationExpr();
     }
-    str = "\nTime measured = " + str + "\n";
+    str = "\nTime elapsed = " + str + "\n";
     return str;
   }
 
