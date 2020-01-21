@@ -64,8 +64,12 @@ public:
     return str;
   }
 
-  ~TimeMeasure() {
+  void PrintElapsed() {
     std::cout << ElapsedStr();
+  }
+  
+  ~TimeMeasure() {
+    PrintElapsed();
   }
 private:
   std::string DurationExpr() {
