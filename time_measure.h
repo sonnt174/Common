@@ -41,14 +41,27 @@ public:
   TimeMeasure() {
     start_t_ = std::chrono::steady_clock::now();
   }
+  ~TimeMeasure() {
+    PrintElapsed();
+  }
+  TimeUnit Elapsed();
+  std::string ElapsedStr();
+  void PrintElapsed();
+  
+private:
+  std::string DurationExpr();
+  std::chrono::time_point<std::chrono::steady_clock> start_t_;
+};
 
-  TimeUnit Elapsed() {
+template <typename TimeUnit>
+TimeUnit TimeMeasure<TimeUnit>::Elapsed() {
     auto end_t = std::chrono::steady_clock::now();
     auto elapsed = std::chrono::duration_cast<TimeUnit>(end_t - start_t_);
     return elapsed;
-  }
+}
 
-  std::string ElapsedStr() {
+template <typename TimeUnit>
+std::string TimeMeasure<TimeUnit>::ElapsedStr() {
     std::string str = "";
     auto elap = Elapsed();
     if (DurationExpr() == "") {
@@ -56,83 +69,59 @@ public:
       auto den = TimeUnit::period::den;
       auto sec_factor = num * 1.0 / den;
       str = std::to_string(elap.count() * sec_factor) + " seconds";
-    }
-    else {
+    } else {
       str = std::to_string(elap.count()) + " " + DurationExpr();
     }
     str = "\nTime elapsed = " + str + "\n";
     return str;
-  }
+}
 
-  void PrintElapsed() {
+template <typename TimeUnit>
+void TimeMeasure<TimeUnit>::PrintElapsed() {
     std::cout << ElapsedStr();
-  }
-  
-  ~TimeMeasure() {
-    PrintElapsed();
-  }
-private:
-  std::string DurationExpr() {
+}
+
+template <typename TimeUnit>
+std::string TimeMeasure<TimeUnit>::DurationExpr() {
     if (std::ratio_equal<typename TimeUnit::period, std::atto>::value) {
       return "atto seconds";
-    }
-    else if (std::ratio_equal<typename TimeUnit::period, std::femto>::value) {
+    } else if (std::ratio_equal<typename TimeUnit::period, std::femto>::value) {
       return "femto seconds";
-    }
-    else if (std::ratio_equal<typename TimeUnit::period, std::pico>::value) {
+    } else if (std::ratio_equal<typename TimeUnit::period, std::pico>::value) {
       return "pico seconds";
-    }
-    else if (std::ratio_equal<typename TimeUnit::period, std::nano>::value) {
+    } else if (std::ratio_equal<typename TimeUnit::period, std::nano>::value) {
       return "nano seconds";
-    }
-    else if (std::ratio_equal<typename TimeUnit::period, std::micro>::value) {
+    } else if (std::ratio_equal<typename TimeUnit::period, std::micro>::value) {
       return "micro seconds";
-    }
-    else if (std::ratio_equal<typename TimeUnit::period, std::milli>::value) {
+    } else if (std::ratio_equal<typename TimeUnit::period, std::milli>::value) {
       return "milli seconds";
-    }
-    else if (std::ratio_equal<typename TimeUnit::period, std::centi>::value) {
+    } else if (std::ratio_equal<typename TimeUnit::period, std::centi>::value) {
       return "centi seconds";
-    }
-    else if (std::ratio_equal<typename TimeUnit::period, std::deci>::value) {
+    } else if (std::ratio_equal<typename TimeUnit::period, std::deci>::value) {
       return "deci seconds";
-    }
-    else if (std::ratio_equal<typename TimeUnit::period, std::deca>::value) {
+    } else if (std::ratio_equal<typename TimeUnit::period, std::deca>::value) {
       return "deca seconds";
-    }
-    else if (std::ratio_equal<typename TimeUnit::period, std::hecto>::value) {
+    } else if (std::ratio_equal<typename TimeUnit::period, std::hecto>::value) {
       return "hecto seconds";
-    }
-    else if (std::ratio_equal<typename TimeUnit::period, std::kilo>::value) {
+    } else if (std::ratio_equal<typename TimeUnit::period, std::kilo>::value) {
       return "kilo seconds";
-    }
-    else if (std::ratio_equal<typename TimeUnit::period, std::mega>::value) {
+    } else if (std::ratio_equal<typename TimeUnit::period, std::mega>::value) {
       return "mega seconds";
-    }
-    else if (std::ratio_equal<typename TimeUnit::period, std::giga>::value) {
+    } else if (std::ratio_equal<typename TimeUnit::period, std::giga>::value) {
       return "giga seconds";
-    }
-    else if (std::ratio_equal<typename TimeUnit::period, std::tera>::value) {
+    } else if (std::ratio_equal<typename TimeUnit::period, std::tera>::value) {
       return "tera seconds";
-    }
-    else if (std::ratio_equal<typename TimeUnit::period, std::peta>::value) {
+    } else if (std::ratio_equal<typename TimeUnit::period, std::peta>::value) {
       return "peta seconds";
-    }
-    else if (std::ratio_equal<typename TimeUnit::period, std::exa>::value) {
+    } else if (std::ratio_equal<typename TimeUnit::period, std::exa>::value) {
       return "exa seconds";
-    }
-    else if (std::ratio_equal<typename TimeUnit::period, std::chrono::minutes::period>::value) {
+    } else if (std::ratio_equal<typename TimeUnit::period, std::chrono::minutes::period>::value) {
       return "minutes";
-    }
-    else if (std::ratio_equal<typename TimeUnit::period, std::chrono::hours::period>::value) {
+    } else if (std::ratio_equal<typename TimeUnit::period, std::chrono::hours::period>::value) {
       return "hours";
-    }
-    else {
+    } else {
       return "";
     }
-  }
-
-  std::chrono::time_point<std::chrono::steady_clock> start_t_;
-};
+}
 
 #endif
